@@ -3,13 +3,16 @@ Copyright (c) 2026 Francisco Ramírez. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Francisco Ramírez
 -/
-import Mathlib.Analysis.Normed.Group.Basic
-import Mathlib.Analysis.Normed.Group.Continuity
-import Mathlib.Analysis.Normed.Module.Basic
-import Mathlib.Topology.Continuous
-import Mathlib.Topology.Instances.Real.Lemmas
-import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
-import Mathlib.Tactic.Module
+
+module
+public import Mathlib.Analysis.Normed.Group.Basic
+public import Mathlib.Analysis.Normed.Group.Continuity
+public import Mathlib.Analysis.Normed.Module.Basic
+public import Mathlib.Topology.Continuous
+public import Mathlib.Topology.Instances.Real.Lemmas
+public import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
+public import Mathlib.MeasureTheory.Integral.IntervalIntegral.Periodic
+public import Mathlib.Tactic.Module
 
 /-!
 # Convergence of the temporal average of a periodic function
@@ -38,8 +41,10 @@ H. Amann, J. Escher, *Analysis III* (Birkhäuser, 2009), §9.4.
 periodic function, Cesàro mean, temporal average, interval integral
 -/
 
+@[expose] public section
+
 open scoped Topology
-open Filter
+open MeasureTheory Filter
 
 variable {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X] [CompleteSpace X]
 
@@ -81,7 +86,7 @@ theorem periodicAverage_tendsto
       have h1 : (∫ t in (0:ℝ)..((⌊T'/T⌋:ℤ) • T), h t) = (⌊T'/T⌋:ℤ) • I := by
         have := hper.intervalIntegral_add_zsmul_eq (⌊T'/T⌋:ℤ) 0 hint
         simpa [hI] using this
-      have hadj := integral_add_adjacent_intervals
+      have hadj := intervalIntegral.integral_add_adjacent_intervals
         (hint 0 ((⌊T'/T⌋:ℤ) • T)) (hint ((⌊T'/T⌋:ℤ) • T) T')
       rw [← hadj, h1]
       congr 2

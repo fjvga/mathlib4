@@ -2462,12 +2462,12 @@ public import Mathlib.Analysis.SpecialFunctions.Trigonometric.InverseDeriv
 public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Meromorphic
 public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Series
 public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Sinc
-public import Mathlib.Analysis.SpecificLimits.PeriodicAverageTendsto
-import Mathlib.Analysis.SpecificLimits.ArithmeticGeometric
+public import Mathlib.Analysis.SpecificLimits.ArithmeticGeometric
 public import Mathlib.Analysis.SpecificLimits.Basic
 public import Mathlib.Analysis.SpecificLimits.Fibonacci
 public import Mathlib.Analysis.SpecificLimits.FloorPow
 public import Mathlib.Analysis.SpecificLimits.Normed
+public import Mathlib.Analysis.SpecificLimits.PeriodicAverageTendsto
 public import Mathlib.Analysis.SpecificLimits.RCLike
 public import Mathlib.Analysis.Subadditive
 public import Mathlib.Analysis.SumIntegralComparisons
