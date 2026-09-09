@@ -1667,7 +1667,7 @@ public import Mathlib.AlgebraicTopology.SingularSet
 public import Mathlib.AlgebraicTopology.TopologicalSimplex
 public import Mathlib.Analysis.AbsoluteValue.Equivalence
 public import Mathlib.Analysis.Analytic.AnalyticMeasureZero
-import Mathlib.Analysis.Analytic.Basic
+public import Mathlib.Analysis.Analytic.Basic
 public import Mathlib.Analysis.Analytic.Binomial
 public import Mathlib.Analysis.Analytic.CPolynomial
 public import Mathlib.Analysis.Analytic.CPolynomialDef

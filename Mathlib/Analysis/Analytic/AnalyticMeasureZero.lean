@@ -3,10 +3,13 @@ Copyright (c) 2026 Francisco Ramírez. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Francisco Ramírez
 -/
-import Mathlib.Analysis.Analytic.IsolatedZeros
-import Mathlib.MeasureTheory.Topology
-import Mathlib.MeasureTheory.Measure.Restrict
-import Mathlib.MeasureTheory.Measure.Typeclasses.NoAtoms
+
+module
+public import Mathlib.Analysis.Analytic.IsolatedZeros
+public import Mathlib.MeasureTheory.Topology
+public import Mathlib.MeasureTheory.Measure.Restrict
+public import Mathlib.MeasureTheory.Measure.Typeclasses.NullSingletonClass
+public import Mathlib.MeasureTheory.Constructions.BorelSpace.Basic
 
 /-!
 # Measure-zero of the zero set of a nontrivial real-analytic function
@@ -37,13 +40,15 @@ The codiscrete-to-a.e. bridge is a standard measure-theoretic refinement.
 analytic function, isolated zeros, measure zero, atomless measure
 -/
 
+@[expose] public section
+
 open MeasureTheory
 
 /-- A real-analytic function `f : ℝ → ℝ` that is not identically zero satisfies
 `f x ≠ 0` for `μ`-almost-every `x`, for any atomless measure `μ`. -/
 theorem analyticOnNhd_ne_zero_ae {f : ℝ → ℝ}
     (hf : AnalyticOnNhd ℝ f Set.univ) (h0 : ∃ x, f x ≠ 0)
-    {μ : Measure ℝ} [NoAtoms μ] :
+    {μ : Measure ℝ} [NullSingletonClass μ] :
     ∀ᵐ x ∂μ, f x ≠ 0 := by
   -- `f` is not identically zero on `univ`.
   have hnotEqOn : ¬ Set.EqOn f 0 Set.univ := by
@@ -52,12 +57,12 @@ theorem analyticOnNhd_ne_zero_ae {f : ℝ → ℝ}
     exact hx (h (Set.mem_univ x))
   -- Isolated-zeros dichotomy (global version, `univ` is preconnected).
   have hdich :
-      Set.EqOn f 0 Set.univ ∨ ∀ᶠ x in codiscreteWithin Set.univ, f x ≠ 0 :=
+      Set.EqOn f 0 Set.univ ∨ ∀ᶠ x in Filter.codiscreteWithin Set.univ, f x ≠ 0 :=
     hf.eqOn_zero_or_eventually_ne_zero_of_preconnected isPreconnected_univ
   rcases hdich with hEq | hCodisc
   · exact absurd hEq hnotEqOn
   · -- `{x | f x ≠ 0}` is codiscrete in `univ`; transfer to "almost everywhere".
-    have hle : ae (μ.restrict Set.univ) ≤ codiscreteWithin Set.univ :=
+    have hle : ae (μ.restrict Set.univ) ≤ Filter.codiscreteWithin Set.univ :=
       ae_restrict_le_codiscreteWithin (μ := μ) MeasurableSet.univ
     have hae_restrict : ∀ᵐ x ∂(μ.restrict Set.univ), f x ≠ 0 := hle hCodisc
     rwa [Measure.restrict_univ] at hae_restrict
