@@ -3,9 +3,13 @@ Copyright (c) 2026 Francisco Ramírez. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Francisco Ramírez
 -/
-import Mathlib.Analysis.Normed.Group.Basic
-import Mathlib.Algebra.Ring.Periodic
-import Mathlib.Topology.Semicontinuity.Basic
+
+module
+public import Mathlib.Analysis.Normed.Group.Basic
+public import Mathlib.Analysis.Normed.Group.Continuity
+public import Mathlib.Analysis.Normed.Module.Basic
+public import Mathlib.Algebra.Ring.Periodic
+public import Mathlib.Topology.Semicontinuity.Basic
 
 /-!
 # Bohr almost-periodic functions (definition + elementary closure properties)
@@ -34,6 +38,8 @@ relative-density intersection theorem (companion PR).
 almost periodic, Bohr, periodic, almost period
 -/
 
+@[expose] public section
+
 open Set
 
 /-- A function `f : ℝ → X` is *almost periodic* (Bohr) if for every `ε > 0`
@@ -50,7 +56,7 @@ theorem isAlmostPeriodic_const {X : Type*} [NormedAddCommGroup X] (c : X) :
   intro ε hε
   refine ⟨1, one_pos, fun a => ?_⟩
   refine ⟨a, ⟨le_refl a, by linarith⟩, fun t => ?_⟩
-  simp; exact hε
+  rw [sub_self, norm_zero]; exact hε
 
 /-- Almost-periodic functions are closed under negation. -/
 theorem IsAlmostPeriodic.neg {X : Type*} [NormedAddCommGroup X] {f : ℝ → X}
@@ -61,27 +67,27 @@ theorem IsAlmostPeriodic.neg {X : Type*} [NormedAddCommGroup X] {f : ℝ → X}
   obtain ⟨τ, hτ, hτt⟩ := h a
   refine ⟨τ, hτ, fun t => ?_⟩
   have heq : (fun t => -f t) (t + τ) - (fun t => -f t) t = -(f (t + τ) - f t) := by
-    show -(f (t + τ)) - -(f t) = -(f (t + τ) - f t)
+    simp only []
     abel
   rw [heq, norm_neg]
   exact hτt t
 
 /-- Almost-periodic functions are closed under real scalar multiplication. -/
-theorem IsAlmostPeriodic.const_mul {X : Type*} [NormedAddCommGroup X]
+theorem IsAlmostPeriodic.const_mul {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
     {f : ℝ → X} (hf : IsAlmostPeriodic f) (c : ℝ) :
     IsAlmostPeriodic (fun t => c • f t) := by
   intro ε hε
   rcases eq_or_ne c 0 with hc | hc
   · rw [hc]
     simp only [zero_smul]
-    exact isAlmostPeriodic_const 0
+    exact isAlmostPeriodic_const (0 : X) ε hε
   · have habs : 0 < |c| := abs_pos.mpr hc
     obtain ⟨L, hL, h⟩ := hf (ε / |c|) (by positivity)
     refine ⟨L, hL, fun a => ?_⟩
     obtain ⟨τ, hτ, hτt⟩ := h a
     refine ⟨τ, hτ, fun t => ?_⟩
     have hnorm : ‖c • f (t + τ) - c • f t‖ = |c| * ‖f (t + τ) - f t‖ := by
-      rw [smul_sub, norm_smul]
+      rw [← smul_sub, norm_smul, Real.norm_eq_abs]
     rw [hnorm]
     calc |c| * ‖f (t + τ) - f t‖ < |c| * (ε / |c|) :=
           mul_lt_mul_of_pos_left (hτt t) habs
@@ -105,7 +111,7 @@ theorem Function.Periodic.isAlmostPeriodic {X : Type*} [NormedAddCommGroup X]
   refine ⟨((⌊a / T⌋ + 1 : ℤ) : ℝ) * T, ⟨hge, hle⟩, fun t => ?_⟩
   have hperiod := hf.int_mul (⌊a / T⌋ + 1)
   have heq : f (t + ((⌊a / T⌋ + 1 : ℤ) : ℝ) * T) = f t := hperiod t
-  rw [heq]; simp; exact hε
+  rw [heq, sub_self, norm_zero]; exact hε
 
 /-! ### Boundedness -/
 
@@ -115,7 +121,7 @@ theorem IsAlmostPeriodic.bounded_of_continuous {X : Type*} [NormedAddCommGroup X
     {f : ℝ → X} (hf : IsAlmostPeriodic f) (hcont : Continuous f) :
     ∃ M : ℝ, 0 ≤ M ∧ ∀ t, ‖f t‖ ≤ M := by
   obtain ⟨L, hLpos, hL⟩ := hf 1 one_pos
-  have hcont' : Continuous fun t : ℝ => ‖f t‖ := hcont.norm
+  have hcont' : Continuous fun t : ℝ => ‖f t‖ := continuous_norm.comp hcont
   have hcompact : IsCompact (Set.Icc 0 L) := isCompact_Icc
   have hne : (Set.Icc (0 : ℝ) L).Nonempty := Set.nonempty_Icc.mpr (le_of_lt hLpos)
   obtain ⟨t0, ht0⟩ := hcompact.exists_isMaxOn hne hcont'.continuousOn

@@ -2188,8 +2188,8 @@ public import Mathlib.Analysis.Normed.Field.WithAbs
 public import Mathlib.Analysis.Normed.Group.AddCircle
 public import Mathlib.Analysis.Normed.Group.AddTorsor
 public import Mathlib.Analysis.Normed.Group.BallSphere
+public import Mathlib.Analysis.Normed.Group.Basic
 public import Mathlib.Analysis.Normed.Group.BohrAlmostPeriodic
-import Mathlib.Analysis.Normed.Group.Basic
 public import Mathlib.Analysis.Normed.Group.Bounded
 public import Mathlib.Analysis.Normed.Group.CocompactMap
 public import Mathlib.Analysis.Normed.Group.Completeness
