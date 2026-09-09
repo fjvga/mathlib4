@@ -3,13 +3,16 @@ Copyright (c) 2026 Francisco Ramírez. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Francisco Ramírez
 -/
-import Mathlib.Analysis.Analytic.Constructions
-import Mathlib.Analysis.Analytic.IsolatedZeros
-import Mathlib.MeasureTheory.Topology
-import Mathlib.MeasureTheory.Measure.Restrict
-import Mathlib.MeasureTheory.Measure.Typeclasses.NoAtoms
-import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
-import Mathlib.LinearAlgebra.Matrix.Rank
+
+module
+public import Mathlib.Analysis.Analytic.Constructions
+public import Mathlib.Analysis.Analytic.IsolatedZeros
+public import Mathlib.MeasureTheory.Topology
+public import Mathlib.MeasureTheory.Measure.Restrict
+public import Mathlib.MeasureTheory.Measure.Typeclasses.NullSingletonClass
+public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+public import Mathlib.LinearAlgebra.Matrix.Rank
+public import Mathlib.MeasureTheory.Constructions.BorelSpace.Basic
 
 /-!
 # Analytic matrix families have full rank almost everywhere
@@ -48,6 +51,8 @@ standard consequence.
 analytic function, matrix, determinant, rank, measure zero, almost everywhere
 -/
 
+@[expose] public section
+
 open MeasureTheory
 
 namespace Matrix
@@ -59,15 +64,15 @@ namespace Matrix
 self-contained. In Mathlib this lives in `Analysis/Analytic/MeasureZero.lean`.) -/
 theorem analyticOnNhd_ne_zero_ae {f : ℝ → ℝ}
     (hf : AnalyticOnNhd ℝ f Set.univ) (h0 : ∃ x, f x ≠ 0)
-    {μ : Measure ℝ} [NoAtoms μ] :
+    {μ : Measure ℝ} [NullSingletonClass μ] :
     ∀ᵐ x ∂μ, f x ≠ 0 := by
   have hnotEqOn : ¬ Set.EqOn f 0 Set.univ := fun h ↦
     let ⟨x, hx⟩ := h0; hx (h (Set.mem_univ x))
-  have hdich : Set.EqOn f 0 Set.univ ∨ ∀ᶠ x in codiscreteWithin Set.univ, f x ≠ 0 :=
+  have hdich : Set.EqOn f 0 Set.univ ∨ ∀ᶠ x in Filter.codiscreteWithin Set.univ, f x ≠ 0 :=
     hf.eqOn_zero_or_eventually_ne_zero_of_preconnected isPreconnected_univ
   rcases hdich with hEq | hCodisc
   · exact absurd hEq hnotEqOn
-  · have hle : ae (μ.restrict Set.univ) ≤ codiscreteWithin Set.univ :=
+  · have hle : ae (μ.restrict Set.univ) ≤ Filter.codiscreteWithin Set.univ :=
       ae_restrict_le_codiscreteWithin (μ := μ) MeasurableSet.univ
     have hae_restrict : ∀ᵐ x ∂(μ.restrict Set.univ), f x ≠ 0 := hle hCodisc
     rwa [Measure.restrict_univ] at hae_restrict
@@ -101,7 +106,7 @@ determinant-zero locus `{ξ | (A ξ).det = 0}`. -/
 theorem rankDrop_subset_detZero {k : ℕ} (A : ℝ → Matrix (Fin k) (Fin k) ℝ) :
     {ξ : ℝ | (A ξ).rank ≠ k} ⊆ {ξ : ℝ | (A ξ).det = 0} := by
   intro ξ hξ
-  simp only [Set.mem_setOf_eq] at hξ ⊢
+  simp only [Set.mem_ofPred_eq] at hξ ⊢
   by_contra hdet
   exact hξ (rank_eq_card_of_det_ne_zero (A ξ) hdet)
 
@@ -110,7 +115,7 @@ theorem rankDrop_subset_detZero {k : ℕ} (A : ℝ → Matrix (Fin k) (Fin k) �
 theorem rank_full_ae {k : ℕ} (A : ℝ → Matrix (Fin k) (Fin k) ℝ)
     (hA : ∀ i j, AnalyticOnNhd ℝ (fun ξ => A ξ i j) Set.univ)
     (hwit : ∃ ξ₀ : ℝ, (A ξ₀).det ≠ 0)
-    {μ : Measure ℝ} [NoAtoms μ] :
+    {μ : Measure ℝ} [NullSingletonClass μ] :
     ∀ᵐ ξ ∂μ, (A ξ).rank = k := by
   have hdet_ne : ∀ᵐ ξ ∂μ, (A ξ).det ≠ 0 :=
     analyticOnNhd_ne_zero_ae (det_analyticOnNhd A hA) hwit
