@@ -3,8 +3,10 @@ Copyright (c) 2026 Francisco Ramírez. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Francisco Ramírez
 -/
-import Mathlib.MeasureTheory.Integral.Bochner.Set
-import Mathlib.MeasureTheory.Integral.Bochner.Basic
+
+module
+public import Mathlib.MeasureTheory.Integral.Bochner.Set
+public import Mathlib.MeasureTheory.Integral.Bochner.Basic
 
 /-!
 # Quantization bound for integrals over finite partitions
@@ -37,6 +39,8 @@ Riemann sums in any measure theory textbook.
 integral, partition, quantization, Riemann sum, error bound
 -/
 
+@[expose] public section
+
 open MeasureTheory
 
 variable {X : Type*} [MeasurableSpace X] {μ : Measure X}
@@ -47,7 +51,7 @@ theorem local_quant (g : X → ℝ) (A : Set X) (c B : ℝ) (hμ : μ A < ⊤)
     (hg : IntegrableOn g A μ) (hb : ∀ x ∈ A, |g x - c| ≤ B) :
     |(∫ x in A, g x ∂μ) - μ.real A * c| ≤ B * μ.real A := by
   have hconst : IntegrableOn (fun _ => c) A μ := by
-    haveI : IsFiniteMeasure (μ.restrict A) := ⟨by rwa [Measure.restrict_apply_univ]⟩
+    have : IsFiniteMeasure (μ.restrict A) := ⟨by rwa [Measure.restrict_apply_univ]⟩
     exact integrable_const c
   have h1 : (∫ x in A, g x ∂μ) - μ.real A * c = ∫ x in A, (g x - c) ∂μ := by
     rw [integral_sub hg hconst, setIntegral_const, smul_eq_mul]
