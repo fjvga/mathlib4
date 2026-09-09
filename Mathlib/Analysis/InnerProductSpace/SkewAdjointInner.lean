@@ -3,7 +3,9 @@ Copyright (c) 2026 Francisco Ramírez. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Francisco Ramírez
 -/
-import Mathlib.Analysis.InnerProductSpace.Adjoint
+
+module
+public import Mathlib.Analysis.InnerProductSpace.Adjoint
 
 /-!
 # Inner product of a skew-adjoint operator with itself
@@ -40,6 +42,8 @@ to the symmetric strain.
 
 inner product space, adjoint, skew-adjoint, antisymmetric operator
 -/
+
+@[expose] public section
 
 open scoped InnerProductSpace
 
