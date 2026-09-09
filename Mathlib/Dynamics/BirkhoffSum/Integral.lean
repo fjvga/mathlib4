@@ -3,10 +3,12 @@ Copyright (c) 2026 Francisco Ramírez. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Francisco Ramírez
 -/
-import Mathlib.Dynamics.BirkhoffSum.Basic
-import Mathlib.Dynamics.Ergodic.MeasurePreserving
-import Mathlib.MeasureTheory.Integral.Bochner.Basic
-import Mathlib.MeasureTheory.Measure.Map
+
+module
+public import Mathlib.Dynamics.BirkhoffSum.Basic
+public import Mathlib.Dynamics.Ergodic.MeasurePreserving
+public import Mathlib.MeasureTheory.Integral.Bochner.Basic
+public import Mathlib.MeasureTheory.Measure.Map
 
 /-!
 # Integral of the Birkhoff sum under a measure-preserving map
@@ -36,6 +38,8 @@ The Birkhoff ergodic theorem; see e.g. K. Petersen, *Ergodic Theory*
 
 Birkhoff sum, measure preserving, integral invariance, ergodic theory
 -/
+
+@[expose] public section
 
 open MeasureTheory
 
